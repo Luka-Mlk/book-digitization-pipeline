@@ -1,17 +1,17 @@
 import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright
+from utils.config import IMAGES_DIR
 
 class BookScraper:
-    def __init__(self, url, book_name, base_dir="data/raw_screenshots"):
+    def __init__(self, url, book_name, base_dir=None):
         self.url = url
         # 1. Sanitize the book name for the file system
-        # Removes spaces and ensures only alphanumeric/underscores
         clean_name = "".join(c if c.isalnum() else "_" for c in book_name).lower()
         self.book_name = clean_name
         
-        # 2. Setup the specific directory: data/raw_screenshots/bookname
-        self.output_dir = Path(base_dir) / self.book_name
+        # 2. Setup the images directory (flat)
+        self.output_dir = Path(base_dir) if base_dir else IMAGES_DIR
         
         # Create the directory (and parents) if it doesn't exist
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -31,15 +31,18 @@ class BookScraper:
 
             page_count = 1
             while True:
-                print(f"[{self.book_name}] Capturing Page {page_count}...")
+                print(f"[{self.book_name}] Capturing Page Spread {page_count}...")
 
                 # Define the capture areas
                 area_1 = {'x': 260, 'y': 85, 'width': 384, 'height': 546} 
                 area_2 = {'x': 644, 'y': 85, 'width': 384, 'height': 546}
 
-                # 3. Construct the organized file paths
-                left_file = self.output_dir / f"{self.book_name}_page_{page_count}_left.png"
-                right_file = self.output_dir / f"{self.book_name}_page_{page_count}_right.png"
+                # 3. Construct the organized file paths (flat sequential)
+                left_page_n = 2 * page_count - 1
+                right_page_n = 2 * page_count
+                
+                left_file = self.output_dir / f"{self.book_name}_page_{left_page_n:02d}.png"
+                right_file = self.output_dir / f"{self.book_name}_page_{right_page_n:02d}.png"
 
                 await page.screenshot(path=str(left_file), clip=area_1)
                 await page.screenshot(path=str(right_file), clip=area_2)
