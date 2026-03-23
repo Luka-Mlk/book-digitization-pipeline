@@ -63,7 +63,11 @@ def main():
 
     for book in processed_books:
         book_txt_dir = TXT_DIR / book
-        txt_files = sorted(list(book_txt_dir.glob("*.txt")))
+        # Sort numerically by extracting the number from bookpage_NN.txt
+        txt_files = sorted(
+            list(book_txt_dir.glob("*.txt")),
+            key=lambda x: int(x.stem.split("_page_")[1])
+        )
         
         combined_text = []
         for i, f_path in enumerate(txt_files):
