@@ -9,6 +9,8 @@ RAW_DIR = DATA_DIR / "raw_screenshots"
 PROC_DIR = DATA_DIR / "processed_screenshots"
 MD_DIR = DATA_DIR / "markdown_output"
 TXT_DIR = DATA_DIR / "text_output"
+IMAGES_DIR = BASE_DIR / "images"
+OCR_OUTPUT_DIR = BASE_DIR / "ocr_output"
 
 # OCR Settings
 SCALE_FACTOR = 2
